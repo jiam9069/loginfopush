@@ -130,7 +130,7 @@ ARCH=$(detect_arch)
 echo "检测到系统架构: $ARCH"
 
 # 二进制下载地址 (jiam9069 release)
-VERSION="v0.0.5"
+VERSION="v0.0.6"
 EXECUTABLE_URL="https://github.com/jiam9069/loginfopush/releases/download/$VERSION/loginfopush-linux-$VERSION-$ARCH"
 
 echo "[4/5] 下载并部署程序..."

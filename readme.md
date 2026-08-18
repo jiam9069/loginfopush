@@ -25,6 +25,14 @@ curl -fsSL https://jiam9069.github.io/loginfopush/install.sh -o install.sh && ba
 
 > 说明：`--server-name` 与 `--server-tag` 可省略，缺省时自动取主机名 / 公网 IP 定位，全程不会交互提问。
 
+一键卸载（停止服务、删除程序与 systemd 配置，保留系统日志）：
+
+```bash
+curl -fsSL https://jiam9069.github.io/loginfopush/uninstall.sh -o uninstall.sh && bash uninstall.sh
+```
+
+> 卸载不会移除 rsyslog / fail2ban（系统组件）；如需一并移除 fail2ban：`apt-get remove --purge fail2ban -y`
+
 ### Telegram 机器人
 
 1. 通过 [@BotFather](https://t.me/BotFather) 创建机器人，获得 `token`。

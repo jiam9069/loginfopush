@@ -59,40 +59,46 @@ func (m *LogMonitor) Close() error {
 	return m.file.Close()
 }
 
-// reopenFile 重新打开文件
+// reopenFile 检查文件是否被轮转，仅在确实轮转时切换文件
 func (m *LogMonitor) reopenFile() error {
-	// 关闭现有文件
-	if m.file != nil {
-		m.file.Close()
+	if m.file == nil {
+		return fmt.Errorf("file is nil")
 	}
 
-	// 重新打开文件
-	file, err := os.Open(m.path)
+	// 获取当前已打开文件的信息（fd 仍然有效，即使文件已被 unlink）
+	curInfo, err := m.file.Stat()
 	if err != nil {
-		return fmt.Errorf("error reopening file: %v", err)
+		return fmt.Errorf("error getting current file info: %v", err)
 	}
 
-	// 获取文件大小
-	info, err := file.Stat()
+	// 打开新文件（此时不关闭旧文件，失败时旧文件仍可继续读取）
+	newFile, err := os.Open(m.path)
 	if err != nil {
-		file.Close()
-		return fmt.Errorf("error getting file info: %v", err)
+		return fmt.Errorf("error opening file: %v", err)
 	}
 
-	// 如果文件大小小于之前的偏移量，说明文件被轮转了
-	if info.Size() < m.offset {
-		m.offset = 0
-	}
-
-	// 设置偏移量
-	_, err = file.Seek(m.offset, 0)
+	newInfo, err := newFile.Stat()
 	if err != nil {
-		file.Close()
-		return fmt.Errorf("error seeking file: %v", err)
+		newFile.Close()
+		return fmt.Errorf("error getting new file info: %v", err)
 	}
 
-	m.file = file
-	m.reader = bufio.NewReader(file)
+	// 判断是否发生轮转：inode 变化，或新文件大小小于已读偏移量（被清空/截断）
+	rotated := !os.SameFile(curInfo, newInfo) || newInfo.Size() < m.offset
+	if !rotated {
+		// 没有轮转，放弃新打开的文件，继续读旧文件
+		newFile.Close()
+		return nil
+	}
+
+	// 文件已轮转：关闭旧文件，从新文件头开始读取
+	if err := m.file.Close(); err != nil {
+		newFile.Close()
+		return fmt.Errorf("error closing old file: %v", err)
+	}
+	m.file = newFile
+	m.reader = bufio.NewReader(newFile)
+	m.offset = 0
 	return nil
 }
 
@@ -120,7 +126,7 @@ func (m *LogMonitor) Start(eventChan chan<- Event, stopChan <-chan struct{}) {
 						time.Sleep(5 * time.Second)
 					}
 
-					time.Sleep(100 * time.Millisecond)
+					time.Sleep(500 * time.Millisecond)
 					continue
 				}
 				fmt.Printf("读取日志错误: %v\n", err)

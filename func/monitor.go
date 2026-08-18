@@ -5,11 +5,7 @@ import (
 	"loginfopush/config"
 	"loginfopush/func/monitors"
 	"loginfopush/notifier"
-	_ "loginfopush/notifier/bark"     // 注册 Bark 通知器
-	_ "loginfopush/notifier/fcm"      // 注册 FCM 通知器
 	_ "loginfopush/notifier/telegram" // 注册 Telegram 通知器
-	_ "loginfopush/notifier/wecom"    // 注册 WeCom 通知器
-	_ "loginfopush/notifier/wxpusher" // 注册 WxPusher 通知器
 	"strings"
 	"sync"
 	"time"

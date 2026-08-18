@@ -4,44 +4,12 @@
     "tag": "tags"
   },
   "notifiers": {
-    "fcm": {
-      "type": "fcm",
-      "enabled": false,
-      "config": {
-        "webhook_url": "https://us-central1-fir-cloudmessaging-4e2cd.cloudfunctions.net/send",
-        "device_token": "xxx"
-      }
-    },
     "telegram": {
       "type": "telegram",
       "enabled": true,
       "config": {
         "webhook_url": "https://api.telegram.org/botxxx/sendMessage",
         "chat_id": "xxx"
-      }
-    },
-    "bark": {
-      "type": "bark",
-      "enabled": false,
-      "config": {
-        "webhook_url": "https://api.day.app",
-        "device_token": "xxx"
-      }
-    },
-    "wecom": {
-      "type": "wecom",
-      "enabled": false,
-      "config": {
-        "webhook_url": "http:/xxx",
-        "send_key": "xxx"
-      }
-    },
-    "wxpusher": {
-      "type": "wxpusher",
-      "enabled": false,
-      "config": {
-        "app_token": "AT_xxx",
-        "uids": ["UID_xxx"]
       }
     }
   },
@@ -52,7 +20,7 @@
       "title": "fail2ban",
       "template": "🚫 服务器: {{.Server.Name}} ({{.Server.Tag}})\nIP: {{.IP}} 已被封禁\n时间: {{.Time}}\n位置: {{.Location}}\n详情: {{.Details}}",
       "icon": "🚫",
-      "notifiers": ["fcm", "telegram", "bark", "wecom"]
+      "notifiers": ["telegram"]
     },
     "login_failure": {
       "type": "fail",
@@ -60,7 +28,7 @@
       "title": "fail2ban",
       "template": "⚠️ 服务器: {{.Server.Name}} ({{.Server.Tag}})\nIP: {{.IP}} 登录失败\n时间: {{.Time}}\n位置: {{.Location}}\n详情: {{.Details}}",
       "icon": "⚠️",
-      "notifiers": ["fcm", "telegram", "bark", "wecom"]
+      "notifiers": ["telegram"]
     },
     "login_success": {
       "type": "success",
@@ -68,7 +36,7 @@
       "title": "loginfopush",
       "template": "✅ 服务器: {{.Server.Name}} ({{.Server.Tag}})\nIP: {{.IP}} 登录成功\n时间: {{.Time}}\n位置: {{.Location}}\n详情: {{.Details}}",
       "icon": "✅",
-      "notifiers": ["fcm", "telegram", "bark", "wecom"]
+      "notifiers": ["telegram"]
     }
   }
-} 
+}

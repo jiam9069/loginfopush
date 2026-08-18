@@ -36,14 +36,6 @@ func LoadConfig(configPath string) (*Config, error) {
 	// 验证并转换具体的配置类型
 	for name, notifier := range config.Notifiers {
 		switch notifier.Type {
-		case NotifierTypeFCM:
-			var fcmConfig FCMConfig
-			data, _ := json.Marshal(notifier.Config)
-			if err := json.Unmarshal(data, &fcmConfig); err != nil {
-				return nil, fmt.Errorf("解析 FCM 配置失败: %v", err)
-			}
-			notifier.Config = fcmConfig
-			config.Notifiers[name] = notifier
 		case NotifierTypeTelegram:
 			var telegramConfig TelegramConfig
 			data, _ := json.Marshal(notifier.Config)
@@ -51,30 +43,6 @@ func LoadConfig(configPath string) (*Config, error) {
 				return nil, fmt.Errorf("解析 Telegram 配置失败: %v", err)
 			}
 			notifier.Config = telegramConfig
-			config.Notifiers[name] = notifier
-		case NotifierTypeBark:
-			var barkConfig BarkConfig
-			data, _ := json.Marshal(notifier.Config)
-			if err := json.Unmarshal(data, &barkConfig); err != nil {
-				return nil, fmt.Errorf("解析 Bark 配置失败: %v", err)
-			}
-			notifier.Config = barkConfig
-			config.Notifiers[name] = notifier
-		case NotifierTypeWeCom:
-			var wecomConfig WeComConfig
-			data, _ := json.Marshal(notifier.Config)
-			if err := json.Unmarshal(data, &wecomConfig); err != nil {
-				return nil, fmt.Errorf("解析 WeCom 配置失败: %v", err)
-			}
-			notifier.Config = wecomConfig
-			config.Notifiers[name] = notifier
-		case NotifierTypeWxPusher:
-			var wxPusherConfig WxPusherConfig
-			data, _ := json.Marshal(notifier.Config)
-			if err := json.Unmarshal(data, &wxPusherConfig); err != nil {
-				return nil, fmt.Errorf("解析 WxPusher 配置失败: %v", err)
-			}
-			notifier.Config = wxPusherConfig
 			config.Notifiers[name] = notifier
 		default:
 			return nil, fmt.Errorf("不支持的通知类型: %s", notifier.Type)
